@@ -1,0 +1,36 @@
+---
+- name: Instalar utilitário unzip
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+
+- name: Descarregar instalador da AWS CLI v2
+  ansible.builtin.get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp/awscliv2.zip
+    mode: '0644'
+
+- name: Criar diretório temporário para extração
+  ansible.builtin.file:
+    path: /tmp/awscli_extracted
+    state: directory
+    mode: '0755'
+
+- name: Extrair o instalador da AWS CLI
+  ansible.builtin.unarchive:
+    src: /tmp/awscliv2.zip
+    dest: /tmp/awscli_extracted
+    remote_src: yes
+
+- name: Executar o script de instalação oficial da AWS CLI
+  ansible.builtin.command:
+    cmd: /tmp/awscli_extracted/aws/install --update
+    creates: /usr/local/bin/aws
+
+- name: Limpar ficheiros temporários de instalação
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /tmp/awscliv2.zip
+    - /tmp/awscli_extracted

@@ -1,0 +1,7 @@
+- hosts: role_platform_infra_ec2_role
+  gather_facts: false
+  
+  roles:
+    - docker
+    - aws_cli
+    - certbot

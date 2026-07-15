@@ -1,0 +1,61 @@
+---
+- name: Atualizar cache de pacotes
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Instalar dependências básicas para o Docker
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Adicionar chave GPG oficial do Docker
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Descobrir o codinome do Ubuntu via Shell
+  ansible.builtin.command: lsb_release -cs
+  register: ubuntu_codename
+  changed_when: false
+
+- name: Adicionar repositório Docker de forma dinâmica
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_codename.stdout }} stable"
+    state: present
+
+- name: Atualizar cache após adicionar repositório
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Instalar Docker Engine e Docker Compose plugin
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+
+- name: Criar diretório da aplicação do portfólio
+  ansible.builtin.file:
+    path: /opt/app
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Garantir que o grupo docker existe
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Adicionar o usuário ubuntu ao grupo docker
+  ansible.builtin.user:
+    name: ubuntu
+    groups: docker
+    append: yes
+  notify: Reiniciar Docker
