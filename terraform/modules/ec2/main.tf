@@ -8,5 +8,6 @@ resource "aws_instance" "ec2" {
   tags = {
     Name = "platform-infra-${count.index + 1}"
     Role = var.ec2_role
+    Project = "platform-infra"
   }
 }
