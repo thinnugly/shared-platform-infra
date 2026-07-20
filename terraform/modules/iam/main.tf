@@ -114,14 +114,20 @@ resource "aws_iam_policy" "ssm_s3_access" {
           "s3:PutObject",
           "s3:DeleteObject"
         ]
-        Resource = "arn:aws:s3:::sge-media-bucket/*"
+        Resource = [
+          "arn:aws:s3:::sge-media-bucket/*",
+          "arn:aws:s3:::portfolio-media-bucket/*"
+        ]
       },
       {
         Effect = "Allow"
         Action = [
           "s3:ListBucket"
         ]
-        Resource = "arn:aws:s3:::sge-media-bucket"
+        Resource = [
+          "arn:aws:s3:::sge-media-bucket",
+          "arn:aws:s3:::portfolio-media-bucket"
+        ]
       }
     ]
   })
