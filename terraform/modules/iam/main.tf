@@ -116,7 +116,7 @@ resource "aws_iam_policy" "ssm_s3_access" {
         ]
         Resource = [
           "arn:aws:s3:::sge-media-bucket/*",
-          "arn:aws:s3:::portfolio-media-bucket/*"
+          "arn:aws:s3:::portfolio-media-bucketd/*"
         ]
       },
       {
@@ -126,7 +126,7 @@ resource "aws_iam_policy" "ssm_s3_access" {
         ]
         Resource = [
           "arn:aws:s3:::sge-media-bucket",
-          "arn:aws:s3:::portfolio-media-bucket"
+          "arn:aws:s3:::portfolio-media-bucketd"
         ]
       }
     ]
